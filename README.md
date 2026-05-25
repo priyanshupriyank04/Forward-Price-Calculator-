@@ -1,6 +1,6 @@
 # Forward Price Calculator
 
-A web-based forward price calculator built with Python and Flask. Choose an asset type, enter your inputs, and get the forward price in the browser. The app can be run locally or deployed publicly (e.g. on [Render](https://render.com)) so anyone can use it from any device.
+A forward price calculator for physical commodities, stocks, and bonds. The live site is a **static web app** (HTML + JavaScript) so it deploys free on **Vercel** or **Netlify** and works on any device—no install, no cold starts.
 
 **Repository:** [github.com/priyanshupriyank04/Forward-Price-Calculator-](https://github.com/priyanshupriyank04/Forward-Price-Calculator-)
 
@@ -9,90 +9,80 @@ A web-based forward price calculator built with Python and Flask. Choose an asse
 - **Physical commodities** — commodity price, time to maturity, interest rate, storage cost, annual insurance
 - **Stock** — spot price, risk-free rate, dividend yield, time to maturity
 - **Bond** — bond price, interest rate, coupon rate, time to maturity
-- Simple web UI with input validation and clear error messages
-- Ready for deployment via `render.yaml`
+- Input validation and clear error messages
+- Same formulas in the browser (`public/js/forward-price.js`) and in Python (`forward_price.py`)
 
 ## Project structure
 
 ```
-├── app.py              # Flask routes and web UI wiring
-├── forward_price.py    # Forward price calculation logic
-├── requirements.txt    # Python dependencies
-├── render.yaml         # Render deployment config
-├── runtime.txt         # Python version for hosting
-└── templates/          # HTML pages
-    ├── base.html
-    ├── index.html
-    └── calculate.html
+├── public/                 # Static site (deploy this)
+│   ├── index.html
+│   ├── calculate.html
+│   ├── css/styles.css
+│   └── js/
+│       ├── forward-price.js
+│       └── calculate.js
+├── vercel.json             # Vercel config
+├── netlify.toml            # Netlify config
+├── forward_price.py        # Python formulas (optional / local Flask)
+├── app.py                  # Flask app (optional local dev)
+└── render.yaml             # Optional Render (Python) deploy
 ```
 
 ## Formulas
 
-**Physical commodities**
+**Physical commodities:** `F = P × (1 + r/100 × t/12) + s × t/12 + i × t/12`
 
+**Stock:** `F = P × e^((r/100 − d/100) × t/12)`
+
+**Bond:** `F = P × (1 + (r/100 − c/100) × t/12)`
+
+`t` is time to maturity in **months**.
+
+## Deploy on Vercel (recommended)
+
+1. Sign in at [vercel.com](https://vercel.com) with GitHub.
+2. **Add New Project** → import `priyanshupriyank04/Forward-Price-Calculator-`.
+3. Leave defaults (Vercel uses `vercel.json` → publishes the `public` folder).
+4. Click **Deploy** → share your `*.vercel.app` URL.
+
+No build command needed. The site is always on (no sleep like free Render).
+
+## Deploy on Netlify
+
+1. Sign in at [netlify.com](https://netlify.com) with GitHub.
+2. **Add new site** → **Import an existing project** → select this repo.
+3. Build settings (auto from `netlify.toml`):
+   - **Publish directory:** `public`
+   - **Build command:** (leave empty)
+4. **Deploy site** → share your `*.netlify.app` URL.
+
+## Run locally (static)
+
+```bash
+cd public
+python3 -m http.server 8080
 ```
-F = P × (1 + r/100 × t/12) + s × t/12 + i × t/12
+
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080).
+
+## Run locally (Flask, optional)
+
+```bash
+pip install -r requirements.txt
+python app.py
 ```
 
-**Stock**
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-```
-F = P × e^((r/100 − d/100) × t/12)
-```
+## Deploy on Render (optional)
 
-**Bond**
-
-```
-F = P × (1 + (r/100 − c/100) × t/12)
-```
-
-Where `P` is price, `r` and `c` are rates in percent, and `t` is time to maturity in **months** (converted to years inside the formulas).
-
-## Run locally
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/priyanshupriyank04/Forward-Price-Calculator-.git
-   cd Forward-Price-Calculator-
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Start the app:
-
-   ```bash
-   python app.py
-   ```
-
-4. Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
-
-## Deploy on Render
-
-1. Sign in at [render.com](https://render.com) and connect your GitHub account.
-2. Click **New +** → **Blueprint**.
-3. Select this repository (`priyanshupriyank04/Forward-Price-Calculator-`).
-4. Render reads `render.yaml` and creates the web service automatically.
-5. After deploy finishes, use the `*.onrender.com` URL to share the calculator.
-
-**Manual setup (alternative):**
-
-| Setting        | Value                                      |
-|----------------|--------------------------------------------|
-| Build command  | `pip install -r requirements.txt`          |
-| Start command  | `gunicorn app:app --bind 0.0.0.0:$PORT`    |
-
-On Render’s free plan, the service may sleep after inactivity; the first request after sleep can take up to a minute to respond.
+Python + Flask hosting via `render.yaml`. Free tier may sleep after inactivity.
 
 ## Tech stack
 
-- Python 3.11
-- Flask
-- Gunicorn (production server)
+- **Production:** HTML, CSS, JavaScript (Vercel / Netlify)
+- **Optional:** Python 3.11, Flask, Gunicorn (local or Render)
 
 ## Contributing
 
