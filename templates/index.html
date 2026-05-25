@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Forward Price Calculator</h1>
+<p>Choose an asset type to calculate the forward price.</p>
+<ul class="choices">
+  {% for key, cfg in calculators.items() %}
+  <li><a href="{{ url_for('calculate', calc_type=key) }}">{{ cfg.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}

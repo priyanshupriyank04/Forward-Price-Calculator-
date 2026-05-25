@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }} — Forward Price{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('index') }}">← Back to home</a>
+<h1>{{ config.title }}</h1>
+
+<form method="post" action="{{ url_for('calculate', calc_type=calc_type) }}">
+  {% for name, label in config.fields %}
+  <label for="{{ name }}">{{ label }}</label>
+  <input
+    type="number"
+    step="any"
+    id="{{ name }}"
+    name="{{ name }}"
+    value="{{ values.get(name, '') }}"
+    required
+  >
+  {% endfor %}
+  <button type="submit">Calculate</button>
+</form>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+{% if result is not none %}
+<div class="result">
+  <p>Forward price</p>
+  <strong>{{ "%.4f"|format(result) }}</strong>
+</div>
+{% endif %}
+{% endblock %}
