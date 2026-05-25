@@ -1,61 +1,99 @@
-Forward Price Calculator
-This is a simple forward price calculator application built using Python and Tkinter. The application allows users to calculate the forward price for physical commodities, stocks, and bonds based on user-provided inputs.
+# Forward Price Calculator
 
-Features
-Physical Commodities: Calculate the forward price for physical commodities based on the commodity price, time to maturity, interest rate, storage cost, and annual insurance cost.
+A web-based forward price calculator built with Python and Flask. Choose an asset type, enter your inputs, and get the forward price in the browser. The app can be run locally or deployed publicly (e.g. on [Render](https://render.com)) so anyone can use it from any device.
 
-Stocks: Calculate the forward price for stocks based on the spot price, risk-free rate, dividend yield, and time to maturity in years.
+**Repository:** [github.com/priyanshupriyank04/Forward-Price-Calculator-](https://github.com/priyanshupriyank04/Forward-Price-Calculator-)
 
-Bonds: Calculate the forward price for bonds based on the bond price, interest rate, coupon rate, and time to maturity in months.
+## Features
 
-User-friendly Interface: The application provides a simple and intuitive user interface with input fields for all the required parameters and a clear output display.
+- **Physical commodities** — commodity price, time to maturity, interest rate, storage cost, annual insurance
+- **Stock** — spot price, risk-free rate, dividend yield, time to maturity
+- **Bond** — bond price, interest rate, coupon rate, time to maturity
+- Simple web UI with input validation and clear error messages
+- Ready for deployment via `render.yaml`
 
-Error Handling: Input validation ensures that users enter valid numerical values, and error messages are displayed for invalid inputs.
+## Project structure
 
-Installation
-Clone the repository:
+```
+├── app.py              # Flask routes and web UI wiring
+├── forward_price.py    # Forward price calculation logic
+├── requirements.txt    # Python dependencies
+├── render.yaml         # Render deployment config
+├── runtime.txt         # Python version for hosting
+└── templates/          # HTML pages
+    ├── base.html
+    ├── index.html
+    └── calculate.html
+```
 
-bash
-Copy code
-git@github.com:shubh123a3/forward_price_calcluator.git
-Navigate to the project directory:
+## Formulas
 
-bash
-Copy code
-cd forward-price-calculator
-Install the required dependencies:
+**Physical commodities**
 
-bash
-Copy code
-pip install -r requirements.txt
-Usage
-Run the application:
+```
+F = P × (1 + r/100 × t/12) + s × t/12 + i × t/12
+```
 
-bash
-Copy code
-python forward_price_calculator.py
-Choose the type of calculation (Physical Commodities, Stocks, or Bonds) by clicking the corresponding button.
+**Stock**
 
-Enter the required input values in the provided fields.
+```
+F = P × e^((r/100 − d/100) × t/12)
+```
 
-Click the "Calculate" button to see the calculated forward price.
+**Bond**
 
-Screenshots
+```
+F = P × (1 + (r/100 − c/100) × t/12)
+```
 
-![image](https://github.com/shubh123a3/forward_price_calcluator/assets/105150274/e9a1fe8b-0e9f-4a30-a5d9-50ad85084121)
-![image](https://github.com/shubh123a3/forward_price_calcluator/assets/105150274/b7e33a31-0100-482d-9aad-70b9c59b3aa3)
-![image](https://github.com/shubh123a3/forward_price_calcluator/assets/105150274/c58727de-9d53-4158-9a92-dc718bae40f5)
-![image](https://github.com/shubh123a3/forward_price_calcluator/assets/105150274/40405177-56c5-4bff-a7d8-771cc9921bea)
+Where `P` is price, `r` and `c` are rates in percent, and `t` is time to maturity in **months** (converted to years inside the formulas).
 
+## Run locally
 
+1. Clone the repository:
 
+   ```bash
+   git clone https://github.com/priyanshupriyank04/Forward-Price-Calculator-.git
+   cd Forward-Price-Calculator-
+   ```
 
+2. Install dependencies:
 
+   ```bash
+   pip install -r requirements.txt
+   ```
 
+3. Start the app:
 
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your improvements.
+   ```bash
+   python app.py
+   ```
 
-License
-This project is licensed under the shubh License - see the LICENSE file for details.
+4. Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
 
+## Deploy on Render
+
+1. Sign in at [render.com](https://render.com) and connect your GitHub account.
+2. Click **New +** → **Blueprint**.
+3. Select this repository (`priyanshupriyank04/Forward-Price-Calculator-`).
+4. Render reads `render.yaml` and creates the web service automatically.
+5. After deploy finishes, use the `*.onrender.com` URL to share the calculator.
+
+**Manual setup (alternative):**
+
+| Setting        | Value                                      |
+|----------------|--------------------------------------------|
+| Build command  | `pip install -r requirements.txt`          |
+| Start command  | `gunicorn app:app --bind 0.0.0.0:$PORT`    |
+
+On Render’s free plan, the service may sleep after inactivity; the first request after sleep can take up to a minute to respond.
+
+## Tech stack
+
+- Python 3.11
+- Flask
+- Gunicorn (production server)
+
+## Contributing
+
+Fork the repository, make your changes, and open a pull request.
